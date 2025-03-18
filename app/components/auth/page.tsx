@@ -45,21 +45,13 @@ const LoginForm: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassowrd] = useState("");
 
-  const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-    setEmail(e.target.value);
-    setPassword(e.target.value);
-    setConfirmPassowrd(e.target.value);
-  };
 
   const formFields = [
     {
       name: "name",
       label: "Name",
       placeholder: "John Doe",
-      onChange: handleData,
     },
     { name: "email", label: "Email", placeholder: "john@example.com" },
     {
@@ -69,21 +61,20 @@ const LoginForm: React.FC = () => {
       type: "password",
     },
   ];
+
   const handleData = (e) => {
     setName(e.target.value);
     setEmail(e.target.value);
     setPassword(e.target.value);
-    setConfirmPassowrd(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDedault();
-    alert("user Added");
+    console.log("user Added");
     const userdata = {
       name: name,
       email: email,
       password: password,
-      confirmPassword: confirmPassword,
     };
   };
 
@@ -95,7 +86,7 @@ const LoginForm: React.FC = () => {
     <div className="flex justify-center items-center min-h-screen">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit}
           className="space-y-8 w-full max-w-[500px] bg-white p-8 rounded-lg border-1 items-center justify-center "
         >
           {formFields.map((field) => (
@@ -108,7 +99,6 @@ const LoginForm: React.FC = () => {
                   <FormLabel className="w-full">{field.label}</FormLabel>
                   <FormControl>
                     <Input
-                      onChange={field.onChange}
                       type={field.type || "text"}
                       placeholder={field.placeholder}
                       className="w-full "
@@ -120,7 +110,7 @@ const LoginForm: React.FC = () => {
               )}
             />
           ))}
-          <Button type="submit" className="w-[400px]">
+          <Button type="submit" className="w-[400px]" onChange={handleData}>
             Submit
           </Button>
         </form>
