@@ -5,7 +5,7 @@ import Test from "@/app/index";
 export default function Home() {
   return (
     <div className="flex w-full items-center justify-center min-h-screen">
-      <Test />
+      <LoginForm />
     </div>
   );
 }

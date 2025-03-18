@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import React, { useState } from "react";
 
 const formSchema = z
   .object({
@@ -31,23 +31,6 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const formFields = [
-  { name: "name", label: "Name", placeholder: "John Doe" },
-  { name: "email", label: "Email", placeholder: "john@example.com" },
-  {
-    name: "password",
-    label: "Password",
-    placeholder: "******",
-    type: "password",
-  },
-  {
-    name: "confirmPassword",
-    label: "Confirm Password",
-    placeholder: "******",
-    type: "password",
-  },
-];
-
 const LoginForm: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,6 +41,51 @@ const LoginForm: React.FC = () => {
       confirmPassword: "",
     },
   });
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassowrd] = useState("");
+
+  const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setEmail(e.target.value);
+    setPassword(e.target.value);
+    setConfirmPassowrd(e.target.value);
+  };
+
+  const formFields = [
+    {
+      name: "name",
+      label: "Name",
+      placeholder: "John Doe",
+      onChange: handleData,
+    },
+    { name: "email", label: "Email", placeholder: "john@example.com" },
+    {
+      name: "password",
+      label: "Password",
+      placeholder: "******",
+      type: "password",
+    },
+  ];
+  const handleData = (e) => {
+    setName(e.target.value);
+    setEmail(e.target.value);
+    setPassword(e.target.value);
+    setConfirmPassowrd(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDedault();
+    alert("user Added");
+    const userdata = {
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
@@ -80,6 +108,7 @@ const LoginForm: React.FC = () => {
                   <FormLabel className="w-full">{field.label}</FormLabel>
                   <FormControl>
                     <Input
+                      onChange={field.onChange}
                       type={field.type || "text"}
                       placeholder={field.placeholder}
                       className="w-full "

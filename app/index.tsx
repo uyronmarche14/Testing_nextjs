@@ -18,7 +18,7 @@ const index = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/users/1")
+    fetch("http://localhost:8080/api/users")
       .then((response) => response.json())
       .then((id_data) => {
         console.log(id_data);
@@ -34,7 +34,10 @@ const index = () => {
           <p>{eachPerson}</p>
         </div>
       ))}
+      <p>{people[0]}</p>
       <p>{id}</p>
+
+      <button> </button>
     </div>
   );
 };
