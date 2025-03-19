@@ -2,6 +2,7 @@
 "use strict";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -30,21 +31,31 @@ export default function Register() {
     };
 
     try {
-      const add = await fetch("http://localhost:8080/api/auth/register", {
+      const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
-      console.log(add);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        window.location.href = "/components/main";
+      } else {
+        alert(data.error || "registration failed");
+      }
+
+      console.log(response);
     } catch (error) {
-      console.error;
+      console.error("registrration error", error);
+      alert("failed ka");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <h2 className="text-center text-3xl font-bold text-gray-900">
           Register Account
