@@ -1,4 +1,5 @@
 "use client";
+import { error } from "console";
 import React from "react";
 import { useState, useEffect } from "react";
 
@@ -7,14 +8,17 @@ const Page = () => {
   const [registration, setRegistration] = useState([]);
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [updateForm, setUpdateForm] = useState({ name: "", email: "" });
 
-  const handleSubmit = async (e) => {
+  const API_URL = "http://localhost:8080/api/auth/register";
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/register", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +39,7 @@ const Page = () => {
       // Refresh the registration list
       fetchRegistrations();
       e.target.reset();
-    } catch (error) {
+    } catch (error: any) {
       setSubmitError(
         error.message || "Failed to connect to server. Please try again.",
       );
@@ -85,13 +89,78 @@ const Page = () => {
                 <div className="text-sm font-medium text-gray-900">
                   {user.id}
                 </div>
+
                 <div className="text-sm text-gray-500">Name</div>
-                <div className="text-sm font-medium text-gray-900">
-                  {user.name}
-                </div>
+                {editingId === user.id ? (
+                  <input
+                    type="text"
+                    value={updateForm.name}
+                    onChange={(e) =>
+                      setUpdateForm({ ...updateForm, name: e.target.value })
+                    }
+                    className="text-sm font-medium text-gray-900 border rounded px-2 py-1"
+                  />
+                ) : (
+                  <div className="text-sm font-medium text-gray-900">
+                    {user.name}
+                  </div>
+                )}
+
                 <div className="text-sm text-gray-500">Email</div>
-                <div className="text-sm font-medium text-gray-900">
-                  {user.email}
+                {editingId === user.id ? (
+                  <input
+                    type="email"
+                    value={updateForm.email}
+                    onChange={(e) =>
+                      setUpdateForm({ ...updateForm, email: e.target.value })
+                    }
+                    className="text-sm font-medium text-gray-900 border rounded px-2 py-1"
+                  />
+                ) : (
+                  <div className="text-sm font-medium text-gray-900">
+                    {user.email}
+                  </div>
+                )}
+
+                <div className="col-span-2 flex justify-end space-x-2 mt-4">
+                  {editingId === user.id ? (
+                    <>
+                      <button
+                        onClick={() => {
+                          console.log("Update functionality not implemented");
+                          setEditingId(null);
+                        }}
+                        className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          setEditingId(user.id);
+                        }}
+                        className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() =>
+                          console.log("Delete functionality not implemented")
+                        }
+                        className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
