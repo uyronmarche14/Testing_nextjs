@@ -2,6 +2,7 @@
 import { error } from "console";
 import React from "react";
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -10,6 +11,8 @@ const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [updateForm, setUpdateForm] = useState({ name: "", email: "" });
+  const [update, setUpdate] = useState({});
+  const params = useParams();
 
   const API_URL = "http://localhost:8080/api/auth/register";
   const handleSubmit = async (e: any) => {
@@ -49,6 +52,27 @@ const Page = () => {
     }
   };
 
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/auth/register/${params._id}`)
+      .then((res) => res.json())
+      .then((data) => setUpdateForm(data));
+  }, [params]);
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault();
+
+    fetch(`http://localhost:3000/api/auth/register/${params._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: e.target.name.value,
+        email: e.target.email.value,
+      }),
+    });
+  };
+
   const fetchRegistrations = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/auth/register");
@@ -79,19 +103,19 @@ const Page = () => {
           Registered Users
         </h1>
         <div className="space-y-4">
-          {registration.map((user) => (
+          {registration.map((user, index) => (
             <div
-              key={user.id}
+              key={index}
               className="bg-white rounded-lg shadow-sm p-6 transition-all hover:shadow-md"
             >
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-sm text-gray-500">ID</div>
                 <div className="text-sm font-medium text-gray-900">
-                  {user.id}
+                  {user._id}
                 </div>
 
                 <div className="text-sm text-gray-500">Name</div>
-                {editingId === user.id ? (
+                {editingId === user._id ? (
                   <input
                     type="text"
                     value={updateForm.name}
@@ -107,7 +131,7 @@ const Page = () => {
                 )}
 
                 <div className="text-sm text-gray-500">Email</div>
-                {editingId === user.id ? (
+                {editingId === user._id ? (
                   <input
                     type="email"
                     value={updateForm.email}
@@ -123,7 +147,7 @@ const Page = () => {
                 )}
 
                 <div className="col-span-2 flex justify-end space-x-2 mt-4">
-                  {editingId === user.id ? (
+                  {editingId === user._id ? (
                     <>
                       <button
                         onClick={() => {
@@ -145,7 +169,7 @@ const Page = () => {
                     <>
                       <button
                         onClick={() => {
-                          setEditingId(user.id);
+                          setEditingId(user._id);
                         }}
                         className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
                       >
